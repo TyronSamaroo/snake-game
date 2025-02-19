@@ -287,6 +287,74 @@ interface GameState {
                         </div>
                     </div>
                 </section>
+
+                {/* System Architecture Diagram */}
+                <section className="mb-16">
+                    <h2 className="text-3xl font-semibold mb-6 text-white/90">System Architecture</h2>
+                    <div className="backdrop-blur-md bg-black/20 p-8 rounded-3xl border border-white/5 mb-6">
+                        <pre className="text-sm text-gray-300 font-mono">
+                            {`
+┌─────────────────────────────────────┐      ┌──────────────────────────────────┐
+│           Frontend Layer            │      │          Backend Layer           │
+│                                     │      │                                  │
+│  ┌─────────────┐   ┌─────────────┐ │      │ ┌────────────┐  ┌────────────┐  │
+│  │    React    │   │   Canvas    │ │      │ │   Gorilla  │  │   Game     │  │
+│  │  Components │   │  Rendering  │ │      │ │ WebSocket  │  │  Engine    │  │
+│  └─────┬───────┘   └──────┬──────┘ │      │ └─────┬──────┘  └─────┬──────┘  │
+│        │                  │        │      │       │               │         │
+│  ┌─────┴───────┐   ┌─────┴──────┐ │      │ ┌─────┴──────┐  ┌─────┴──────┐  │
+│  │   State     │   │   Game     │ │      │ │   State    │  │  Collision │  │
+│  │ Management  │◄──►│   Loop    │ │      │ │  Broadcast │  │  Detection │  │
+│  └─────────────┘   └───────────┬┘ │      │ └────────────┘  └────────────┘  │
+│         ▲                      │  │      │        ▲              ▲         │
+│         │                      │  │      │        │              │         │
+│  ┌──────┴──────┐              │  │      │  ┌─────┴──────┐  ┌────┴───────┐  │
+│  │ WebSocket   │              │  │      │  │   Router   │  │   Score    │  │
+│  │   Client    │◄─────────────┘  │      │  │    (Mux)  │  │  Tracking  │  │
+│  └──────┬──────┘                 │      │  └─────┬──────┘  └────┬───────┘  │
+│         │                        │      │        │              │         │
+└─────────┼────────────────────────┘      └────────┼──────────────┼─────────┘
+          │                                         │              │
+          │                                         │              │
+          │                                  ┌──────┴──────────────┴───────┐
+          │                                  │         Database            │
+          └─────────────────────────────────►│          Layer             │
+                                            │        (SQLite)             │
+                                            └───────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                               Communication Flow                             │
+│                                                                             │
+│  1. User Input → WebSocket Client → Backend Router                          │
+│  2. Router → Game Engine → State Update → Broadcast                         │
+│  3. Game Engine ←→ Collision Detection                                      │
+│  4. Score Updates → Database                                                │
+│  5. State Changes → Frontend → Canvas Render                                │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘`}
+                        </pre>
+                    </div>
+                    <div className="space-y-4">
+                        <div className="bg-black/40 p-4 rounded-xl">
+                            <p className="text-emerald-400 font-semibold mb-2">Frontend Components</p>
+                            <ul className="space-y-2 text-gray-300">
+                                <li>• React Components: UI elements and game controls</li>
+                                <li>• Canvas Rendering: Real-time game visualization</li>
+                                <li>• State Management: Game state and WebSocket handling</li>
+                                <li>• WebSocket Client: Real-time communication</li>
+                            </ul>
+                        </div>
+                        <div className="bg-black/40 p-4 rounded-xl">
+                            <p className="text-emerald-400 font-semibold mb-2">Backend Services</p>
+                            <ul className="space-y-2 text-gray-300">
+                                <li>• Game Engine: Core game logic and state management</li>
+                                <li>• WebSocket Handler: Client connection management</li>
+                                <li>• Router: HTTP and WebSocket routing</li>
+                                <li>• Database Layer: Score persistence and leaderboard</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     );
