@@ -7,6 +7,9 @@ const Documentation: React.FC = () => {
                 <h1 className="text-5xl font-bold mb-12 bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
                     Snake Game Documentation
                 </h1>
+                <p className="text-lg text-gray-300 mb-8">
+                    Designed and Developed by Tyron Samaroo
+                </p>
                 
                 {/* Architecture Overview */}
                 <section className="mb-16">

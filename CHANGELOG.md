@@ -1,4 +1,5 @@
 # Snake Game Development Changelog
+Developer: Tyron Samaroo
 
 ## Session Date: February 18, 2025
 

@@ -1,3 +1,10 @@
+/*
+Snake Game Backend Service
+Created by Tyron Samaroo
+
+A modern implementation of the classic Snake game using Go and WebSocket
+*/
+
 package main
 
 import (
