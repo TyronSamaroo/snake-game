@@ -2,16 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 
 // Types for game objects
 interface Point {
-    x: number;
-    y: number;
+    x: number; // Horizontal position on the game grid
+    y: number; // Vertical position on the game grid
 }
 
 interface GameState {
-    snake: Point[];
-    food: Point;
-    score: number;
-    gameOver: boolean;
-    direction: string;
+    snake: Point[];      // Array of points representing the snake's body segments
+    food: Point;         // Current position of the food
+    score: number;       // Player's current score
+    gameOver: boolean;   // Whether the game has ended
+    direction: string;   // Current direction of snake movement
 }
 
 // Add new interfaces
@@ -22,18 +22,19 @@ interface ScoreEntry {
 }
 
 // Game configuration
-const GRID_SIZE = 20;
-const CELL_SIZE = 20;
-const SNAKE_COLOR = '#10b981';  // Updated to match modern emerald color
-const FOOD_COLOR = '#f43f5e';   // Updated to match modern rose color
-const GRID_COLOR = 'rgba(255, 255, 255, 0.03)';  // Even more subtle grid
-const BACKGROUND_COLOR = '#111827';  // Solid dark background
+const GRID_SIZE = 20;           // Number of cells in grid (both width and height)
+const CELL_SIZE = 20;           // Size of each cell in pixels
+const SNAKE_COLOR = '#10b981';  // Color of snake body segments
+const FOOD_COLOR = '#fb7185';   // Color of food items
+const GRID_COLOR = '#222';      // Color of grid lines
+const BACKGROUND_COLOR = '#111'; // Game board background color
 
+// Game component handles the snake game logic and rendering
 const Game: React.FC = () => {
     // Game state management
     const [gameState, setGameState] = useState<GameState>({
-        snake: [{x: 10, y: 10}],
-        food: {x: 5, y: 5},
+        snake: [],
+        food: { x: 0, y: 0 },
         score: 0,
         gameOver: false,
         direction: 'RIGHT'
@@ -45,7 +46,7 @@ const Game: React.FC = () => {
 
     // Refs for WebSocket and canvas
     const wsRef = useRef<WebSocket | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     // Add loading and error states
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,30 +54,28 @@ const Game: React.FC = () => {
 
     // WebSocket connection handler
     const connectWebSocket = () => {
-        wsRef.current = new WebSocket('ws://localhost:8080/ws');
+        // Create new WebSocket connection to game server
+        const ws = new WebSocket('ws://localhost:8080/ws');
         
-        wsRef.current.onopen = () => {
-            console.log('Connected to WebSocket');
-        };
-
-        wsRef.current.onmessage = (event) => {
+        // Handle incoming game state updates
+        ws.onmessage = (event) => {
             const newState = JSON.parse(event.data);
             setGameState(newState);
+            
+            // Show name input when game ends
+            if (newState.gameOver && !showNameInput && !showGameOverLeaderboard) {
+                setShowNameInput(true);
+            }
         };
 
-        wsRef.current.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
+        // Store WebSocket reference
+        wsRef.current = ws;
     };
 
     // Initialize WebSocket connection
     useEffect(() => {
         connectWebSocket();
-        return () => {
-            if (wsRef.current) {
-                wsRef.current.close();
-            }
-        };
+        return () => wsRef.current?.close();
     }, []);
 
     // Game restart handler
@@ -103,8 +102,10 @@ const Game: React.FC = () => {
                 event.preventDefault();
             }
 
+            // Ignore input if game is over
             if (gameState.gameOver) return;
 
+            // Map keyboard arrows to game directions
             let direction: string;
             switch (event.key) {
                 case 'ArrowUp':
@@ -123,11 +124,13 @@ const Game: React.FC = () => {
                     return;
             }
 
+            // Send direction update to server if connection is active
             if (wsRef.current?.readyState === WebSocket.OPEN) {
                 wsRef.current.send(JSON.stringify({ direction }));
             }
         };
 
+        // Add and remove keyboard event listener
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, [gameState.gameOver]);
