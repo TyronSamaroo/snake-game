@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SoundManager, { SoundManagerHandle } from './SoundManager';
 import GameSettings from './GameSettings';
-import ParticlesEffect from './ParticlesEffect';
 
 // Types for game objects
 interface Point {
@@ -48,11 +47,9 @@ const Game: React.FC = () => {
     const [snakeColor, setSnakeColor] = useState<string>('#10b981');
     const [foodColor, setFoodColor] = useState<string>('#fb7185');
     const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
-    const [moveSound, setMoveSound] = useState<boolean>(false);
     const [eatSound, setEatSound] = useState<boolean>(true);
     const [gameOverSound, setGameOverSound] = useState<boolean>(true);
     const [backgroundMusic, setBackgroundMusic] = useState<boolean>(true);
-    const [showParticles, setShowParticles] = useState<boolean>(false);
     const [showSettings, setShowSettings] = useState<boolean>(false);
 
     // Refs for WebSocket and canvas
@@ -65,8 +62,8 @@ const Game: React.FC = () => {
     const [submitError, setSubmitError] = useState<string | null>(null);
 
     // Game configuration based on state
-    const GRID_SIZE = 20;
-    const CELL_SIZE = 20;
+    const GRID_SIZE = 30;
+    const CELL_SIZE = 25;
     const SNAKE_HEAD_COLOR = snakeColor === '#10b981' ? '#34d399' : lightenColor(snakeColor, 20);
     const SNAKE_GRADIENT_START = darkenColor(snakeColor, 10);
     const SNAKE_GRADIENT_END = snakeColor;
@@ -119,7 +116,6 @@ const Game: React.FC = () => {
             // Remove move sound functionality
             if (directionChanged) {
                 setPrevDirection(newState.direction);
-                // Move sound removed as requested
             }
         };
 
@@ -131,6 +127,11 @@ const Game: React.FC = () => {
     useEffect(() => {
         connectWebSocket();
         return () => wsRef.current?.close();
+    }, []);
+
+    // Remove the P key navigation prevention effect since we no longer use P for settings
+    useEffect(() => {
+        // No need for P key prevention
     }, []);
 
     // Game restart handler
@@ -152,13 +153,14 @@ const Game: React.FC = () => {
     // Keyboard controls handler
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            // Prevent page scrolling when using arrow keys
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(event.key)) {
+            // Always prevent default behavior for game controls
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 's', 'S'].includes(event.key)) {
                 event.preventDefault();
+                event.stopPropagation();
             }
 
-            // Toggle settings with 'P' key
-            if (event.key === 'p' || event.key === 'P') {
+            // Toggle settings with 'S' key (changed from 'P')
+            if (event.key === 's' || event.key === 'S') {
                 setShowSettings(prevState => !prevState);
                 return;
             }
@@ -191,9 +193,9 @@ const Game: React.FC = () => {
             }
         };
 
-        // Add and remove keyboard event listener
-        window.addEventListener('keydown', handleKeyPress);
-        return () => window.removeEventListener('keydown', handleKeyPress);
+        // Add event listener with capture phase to intercept events before they bubble
+        window.addEventListener('keydown', handleKeyPress, { capture: true });
+        return () => window.removeEventListener('keydown', handleKeyPress, { capture: true });
     }, [gameState.gameOver, showSettings]);
 
     // Improved leaderboard fetch with error handling
@@ -663,13 +665,12 @@ const Game: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center">
-            {/* Sound Manager Component with ref */}
+        <div className="min-h-screen flex flex-col items-center justify-center p-4">
+            {/* Sound Manager */}
             <SoundManager
                 ref={soundManagerRef}
                 gameState={gameState}
                 eatSound={soundEnabled && eatSound}
-                moveSound={soundEnabled && moveSound}
                 gameOverSound={soundEnabled && gameOverSound}
                 backgroundMusic={soundEnabled && backgroundMusic}
                 prevScore={prevScore}
@@ -684,24 +685,20 @@ const Game: React.FC = () => {
                 setFoodColor={setFoodColor}
                 soundEnabled={soundEnabled}
                 setSoundEnabled={setSoundEnabled}
-                moveSound={moveSound}
-                setMoveSound={setMoveSound}
                 eatSound={eatSound}
                 setEatSound={setEatSound}
                 gameOverSound={gameOverSound}
                 setGameOverSound={setGameOverSound}
                 backgroundMusic={backgroundMusic}
                 setBackgroundMusic={setBackgroundMusic}
-                showParticles={showParticles}
-                setShowParticles={setShowParticles}
                 showSettings={showSettings}
                 setShowSettings={setShowSettings}
             />
             
-            <div className="relative">
+            <div className="relative mt-4">
                 <div className="absolute -inset-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 blur-xl"></div>
-                <div className="relative bg-black/60 p-8 rounded-3xl backdrop-blur-md">
-                    <div className="text-white text-3xl mb-6 flex justify-between items-center">
+                <div className="relative bg-black/60 p-4 md:p-6 rounded-3xl backdrop-blur-md">
+                    <div className="text-white text-3xl mb-4 flex justify-between items-center">
                         <div className="bg-black/60 px-6 py-2 rounded-2xl shadow-lg shadow-green-500/10">
                             Score: <span className="text-green-400 font-bold">
                                 {gameState.score}
@@ -719,7 +716,7 @@ const Game: React.FC = () => {
                             </svg>
                         </button>
                     </div>
-                    <div className="relative">
+                    <div className="relative max-w-full overflow-auto">
                         <canvas
                             ref={canvasRef}
                             width={GRID_SIZE * CELL_SIZE}
@@ -730,6 +727,14 @@ const Game: React.FC = () => {
                                 boxShadow: '0 20px 50px rgba(0,0,0,0.5), 0 0 40px rgba(16, 185, 129, 0.2) inset',
                                 transform: 'perspective(1000px) rotateX(2deg)',
                                 transformStyle: 'preserve-3d'
+                            }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 's' || e.key === 'S') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setShowSettings(prev => !prev);
+                                }
                             }}
                         />
                         
@@ -840,7 +845,7 @@ const Game: React.FC = () => {
                 </div>
             </div>
             <div className="mt-6 text-gray-400 text-sm bg-black/40 px-6 py-3 rounded-full backdrop-blur-sm">
-                Use arrow keys to control the snake • Press P for settings
+                Use arrow keys to control the snake • Press S for settings
             </div>
         </div>
     );

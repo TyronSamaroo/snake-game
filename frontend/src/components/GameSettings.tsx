@@ -7,16 +7,12 @@ export interface GameSettingsProps {
   setFoodColor: (color: string) => void;
   soundEnabled: boolean;
   setSoundEnabled: (enabled: boolean) => void;
-  moveSound: boolean;
-  setMoveSound: (enabled: boolean) => void;
   eatSound: boolean;
   setEatSound: (enabled: boolean) => void;
   gameOverSound: boolean;
   setGameOverSound: (enabled: boolean) => void;
   backgroundMusic: boolean;
   setBackgroundMusic: (enabled: boolean) => void;
-  showParticles: boolean;
-  setShowParticles: (show: boolean) => void;
   showSettings: boolean;
   setShowSettings: (show: boolean) => void;
 }
@@ -48,16 +44,12 @@ const GameSettings: React.FC<GameSettingsProps> = ({
   setFoodColor,
   soundEnabled,
   setSoundEnabled,
-  moveSound,
-  setMoveSound,
   eatSound,
   setEatSound,
   gameOverSound,
   setGameOverSound,
   backgroundMusic,
   setBackgroundMusic,
-  showParticles,
-  setShowParticles,
   showSettings,
   setShowSettings,
 }) => {
@@ -155,20 +147,6 @@ const GameSettings: React.FC<GameSettingsProps> = ({
                 <input 
                   type="checkbox" 
                   className="sr-only peer"
-                  checked={moveSound}
-                  onChange={(e) => setMoveSound(e.target.checked)}
-                  disabled={!soundEnabled}
-                />
-                <div className="w-9 h-5 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600 opacity-50 peer-checked:opacity-100"></div>
-                <span className="ml-3 text-sm font-medium text-gray-300">Movement Sound</span>
-              </label>
-            </div>
-            
-            <div className="flex items-center ml-6">
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  className="sr-only peer"
                   checked={eatSound}
                   onChange={(e) => setEatSound(e.target.checked)}
                   disabled={!soundEnabled}
@@ -191,23 +169,6 @@ const GameSettings: React.FC<GameSettingsProps> = ({
                 <span className="ml-3 text-sm font-medium text-gray-300">Game Over Sound</span>
               </label>
             </div>
-          </div>
-        </div>
-
-        {/* Visual Effects */}
-        <div className="mb-6">
-          <h3 className="text-lg font-medium text-green-400 mb-2">Visual Effects</h3>
-          <div className="flex items-center">
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input 
-                type="checkbox" 
-                className="sr-only peer"
-                checked={showParticles}
-                onChange={(e) => setShowParticles(e.target.checked)}
-              />
-              <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-              <span className="ml-3 text-sm font-medium text-white">Particle Effects</span>
-            </label>
           </div>
         </div>
 

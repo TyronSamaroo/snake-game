@@ -4,7 +4,33 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Snake Game</title>
+    <script>
+      // Ultra-aggressive approach to block S key completely (changed from P)
+      (function() {
+        function blockSKey(e) {
+          if (e.key === 's' || e.key === 'S') {
+            console.log('S key blocked at the document level');
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+          }
+        }
+        
+        // Capture the event at multiple phases and on multiple elements
+        document.addEventListener('keydown', blockSKey, {capture: true});
+        document.addEventListener('keypress', blockSKey, {capture: true});
+        window.addEventListener('keydown', blockSKey, {capture: true});
+        window.addEventListener('keypress', blockSKey, {capture: true});
+        
+        // Also handle it in the load event
+        window.addEventListener('load', function() {
+          document.body.addEventListener('keydown', blockSKey, {capture: true});
+          document.body.addEventListener('keypress', blockSKey, {capture: true});
+        });
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

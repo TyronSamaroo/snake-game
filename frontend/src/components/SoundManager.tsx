@@ -7,7 +7,6 @@ interface SoundManagerProps {
     direction?: string;
   };
   eatSound: boolean;
-  moveSound: boolean;
   gameOverSound: boolean;
   backgroundMusic: boolean;
   prevScore?: number;
@@ -16,13 +15,12 @@ interface SoundManagerProps {
 
 // Define the ref type for external access
 export interface SoundManagerHandle {
-  playMoveSound: () => void;
+  // Removed playMoveSound method
 }
 
 const SoundManager = forwardRef<SoundManagerHandle, SoundManagerProps>(({ 
   gameState, 
   eatSound, 
-  moveSound, 
   gameOverSound,
   backgroundMusic,
   prevScore,
@@ -30,30 +28,20 @@ const SoundManager = forwardRef<SoundManagerHandle, SoundManagerProps>(({
 }, ref) => {
   // Create refs for audio elements
   const eatAudioRef = useRef<HTMLAudioElement | null>(null);
-  const moveAudioRef = useRef<HTMLAudioElement | null>(null);
   const gameOverAudioRef = useRef<HTMLAudioElement | null>(null);
   const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
 
-  // Expose the playMoveSound function to parent components
-  useImperativeHandle(ref, () => ({
-    playMoveSound: () => {
-      if (moveSound && moveAudioRef.current && !gameState.gameOver) {
-        moveAudioRef.current.currentTime = 0;
-        moveAudioRef.current.play().catch(err => console.error("Error playing move sound:", err));
-      }
-    }
-  }));
+  // Empty handleRef since we no longer have moveSound
+  useImperativeHandle(ref, () => ({}));
 
   // Initialize audio elements
   useEffect(() => {
     eatAudioRef.current = new Audio('/sounds/eat.mp3');
-    moveAudioRef.current = new Audio('/sounds/move.mp3');
     gameOverAudioRef.current = new Audio('/sounds/game-over-arcade-6435.mp3');
     backgroundMusicRef.current = new Audio('/sounds/background-game-music.wav');
 
     // Set volume levels
     if (eatAudioRef.current) eatAudioRef.current.volume = 0.6;
-    if (moveAudioRef.current) moveAudioRef.current.volume = 0.3;
     if (gameOverAudioRef.current) gameOverAudioRef.current.volume = 0.9;
     if (backgroundMusicRef.current) {
       backgroundMusicRef.current.volume = 0.4;
@@ -62,7 +50,7 @@ const SoundManager = forwardRef<SoundManagerHandle, SoundManagerProps>(({
 
     return () => {
       // Clean up audio resources
-      [eatAudioRef.current, moveAudioRef.current, gameOverAudioRef.current, backgroundMusicRef.current].forEach(audio => {
+      [eatAudioRef.current, gameOverAudioRef.current, backgroundMusicRef.current].forEach(audio => {
         if (audio) {
           audio.pause();
           audio.currentTime = 0;
@@ -128,23 +116,6 @@ const SoundManager = forwardRef<SoundManagerHandle, SoundManagerProps>(({
       }, 300); // 300ms delay for dramatic effect
     }
   }, [gameState.gameOver, gameOverSound]);
-
-  // We no longer need this implementation since we expose it via ref
-  // and it will be called from Game.tsx only when direction changes
-  /*
-  // Play move sound when direction changes
-  useEffect(() => {
-    if (prevDirection && 
-        gameState.direction && 
-        prevDirection !== gameState.direction && 
-        moveSound && 
-        moveAudioRef.current && 
-        !gameState.gameOver) {
-      moveAudioRef.current.currentTime = 0;
-      moveAudioRef.current.play().catch(err => console.error("Error playing move sound:", err));
-    }
-  }, [gameState.direction, prevDirection, moveSound, gameState.gameOver]);
-  */
 
   return null; // This is a non-visual component
 });
