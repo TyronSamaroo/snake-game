@@ -375,9 +375,12 @@ func (l *Leaderboard) AddScore(playerName string, score int) error {
 	}
 	log.Println("✅ Database connection verified")
 
+	// Use the provided timestamp from the client if available, otherwise use current time
+	currentTime := time.Now().Format("2006-01-02 15:04:05")
+
 	result, err := tx.Exec(
-		"INSERT INTO scores (player_name, score) VALUES (?, ?)",
-		playerName, score,
+		"INSERT INTO scores (player_name, score, date) VALUES (?, ?, ?)",
+		playerName, score, currentTime,
 	)
 	if err != nil {
 		log.Printf("❌ Error inserting score: %v", err)
