@@ -51,6 +51,7 @@ const Game: React.FC = () => {
     const [moveSound, setMoveSound] = useState<boolean>(false);
     const [eatSound, setEatSound] = useState<boolean>(true);
     const [gameOverSound, setGameOverSound] = useState<boolean>(true);
+    const [backgroundMusic, setBackgroundMusic] = useState<boolean>(true);
     const [showParticles, setShowParticles] = useState<boolean>(false);
     const [showSettings, setShowSettings] = useState<boolean>(false);
 
@@ -670,6 +671,7 @@ const Game: React.FC = () => {
                 eatSound={soundEnabled && eatSound}
                 moveSound={soundEnabled && moveSound}
                 gameOverSound={soundEnabled && gameOverSound}
+                backgroundMusic={soundEnabled && backgroundMusic}
                 prevScore={prevScore}
                 prevDirection={prevDirection}
             />
@@ -688,6 +690,8 @@ const Game: React.FC = () => {
                 setEatSound={setEatSound}
                 gameOverSound={gameOverSound}
                 setGameOverSound={setGameOverSound}
+                backgroundMusic={backgroundMusic}
+                setBackgroundMusic={setBackgroundMusic}
                 showParticles={showParticles}
                 setShowParticles={setShowParticles}
                 showSettings={showSettings}

@@ -13,6 +13,8 @@ export interface GameSettingsProps {
   setEatSound: (enabled: boolean) => void;
   gameOverSound: boolean;
   setGameOverSound: (enabled: boolean) => void;
+  backgroundMusic: boolean;
+  setBackgroundMusic: (enabled: boolean) => void;
   showParticles: boolean;
   setShowParticles: (show: boolean) => void;
   showSettings: boolean;
@@ -52,6 +54,8 @@ const GameSettings: React.FC<GameSettingsProps> = ({
   setEatSound,
   gameOverSound,
   setGameOverSound,
+  backgroundMusic,
+  setBackgroundMusic,
   showParticles,
   setShowParticles,
   showSettings,
@@ -129,6 +133,20 @@ const GameSettings: React.FC<GameSettingsProps> = ({
                 />
                 <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
                 <span className="ml-3 text-sm font-medium text-white">Master Sound</span>
+              </label>
+            </div>
+            
+            <div className="flex items-center ml-6">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  className="sr-only peer"
+                  checked={backgroundMusic}
+                  onChange={(e) => setBackgroundMusic(e.target.checked)}
+                  disabled={!soundEnabled}
+                />
+                <div className="w-9 h-5 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600 opacity-50 peer-checked:opacity-100"></div>
+                <span className="ml-3 text-sm font-medium text-gray-300">Background Music</span>
               </label>
             </div>
             

@@ -37,7 +37,9 @@ config.yml
 
 # Sound files (frontend)
 frontend/public/sounds/*.mp3
+frontend/public/sounds/*.wav
 frontend/public/sounds_samples/*.mp3
+frontend/public/sounds_samples/*.wav
 
 # Local database
 backend/game-service/leaderboard.db
