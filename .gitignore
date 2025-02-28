@@ -1,0 +1,44 @@
+# Compiled binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Environment variables and configuration
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config.yaml
+config.yml
+
+# macOS
+.DS_Store
+
+# Sound files (frontend)
+frontend/public/sounds/*.mp3
+frontend/public/sounds_samples/*.mp3
+
+# Local database
+backend/game-service/leaderboard.db
+backend/game-service/data/leaderboard.db 
