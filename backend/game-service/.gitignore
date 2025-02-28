@@ -1,0 +1,17 @@
+# Database files
+*.db
+leaderboard.db
+
+# Binary files
+game-service
+main
+
+# Test data
+data/test_*
+
+# Logs
+*.log
+
+# IDE specific files
+.idea/
+.vscode/ 

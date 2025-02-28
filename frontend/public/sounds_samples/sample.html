@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game Sound Samples</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #121212;
+            color: #eee;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #4ade80;
+            text-align: center;
+        }
+        .section {
+            background: #222;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .sample {
+            display: flex;
+            align-items: center;
+            background: #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .sample-name {
+            flex: 1;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        button {
+            background: #4ade80;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background: #22c55e;
+        }
+        .instructions {
+            background: #2e4057;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .copy-btn {
+            background: #3b82f6;
+        }
+        .copy-btn:hover {
+            background: #2563eb;
+        }
+        .success {
+            color: #4ade80;
+            margin-left: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Snake Game Sound Samples</h1>
+    
+    <div class="instructions">
+        <p>Listen to each sound sample and choose the ones you like for your game. Click the "Play" button to hear a sound, and "Use This Sound" to select it for your game.</p>
+        <p>After selecting your preferred sounds, you'll need to copy them to your game's sound directory and update your code accordingly.</p>
+    </div>
+    
+    <div class="section">
+        <h2>Game Over Sounds</h2>
+        <div class="sample">
+            <div class="sample-name">Game Over Sound 1</div>
+            <button onclick="playSound('gameover1.mp3')">Play</button>
+            <button class="copy-btn" onclick="copySound('gameover1.mp3', 'gameover.mp3')">Use This Sound</button>
+            <span class="success" id="success-gameover1">✓ Selected!</span>
+        </div>
+        <div class="sample">
+            <div class="sample-name">Game Over Sound 2</div>
+            <button onclick="playSound('gameover2.mp3')">Play</button>
+            <button class="copy-btn" onclick="copySound('gameover2.mp3', 'gameover.mp3')">Use This Sound</button>
+            <span class="success" id="success-gameover2">✓ Selected!</span>
+        </div>
+        <div class="sample">
+            <div class="sample-name">Game Over Sound 3</div>
+            <button onclick="playSound('gameover3.mp3')">Play</button>
+            <button class="copy-btn" onclick="copySound('gameover3.mp3', 'gameover.mp3')">Use This Sound</button>
+            <span class="success" id="success-gameover3">✓ Selected!</span>
+        </div>
+        <div class="sample">
+            <div class="sample-name">Game Over Sound 4</div>
+            <button onclick="playSound('gameover4.mp3')">Play</button>
+            <button class="copy-btn" onclick="copySound('gameover4.mp3', 'gameover.mp3')">Use This Sound</button>
+            <span class="success" id="success-gameover4">✓ Selected!</span>
+        </div>
+        <div class="sample">
+            <div class="sample-name">Game Over Sound 5</div>
+            <button onclick="playSound('gameover5.mp3')">Play</button>
+            <button class="copy-btn" onclick="copySound('gameover5.mp3', 'gameover.mp3')">Use This Sound</button>
+            <span class="success" id="success-gameover5">✓ Selected!</span>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Eat Sounds</h2>
+        <div class="sample">
+            <div class="sample-name">Eat Sound 1</div>
+            <button onclick="playSound('eat1.mp3')">Play</button>
+            <button class="copy-btn" onclick="copySound('eat1.mp3', 'eat.mp3')">Use This Sound</button>
+            <span class="success" id="success-eat1">✓ Selected!</span>
+        </div>
+        <div class="sample">
+            <div class="sample-name">Eat Sound 2</div>
+            <button onclick="playSound('eat2.mp3')">Play</button>
+            <button class="copy-btn" onclick="copySound('eat2.mp3', 'eat.mp3')">Use This Sound</button>
+            <span class="success" id="success-eat2">✓ Selected!</span>
+        </div>
+        <div class="sample">
+            <div class="sample-name">Eat Sound 3</div>
+            <button onclick="playSound('eat3.mp3')">Play</button>
+            <button class="copy-btn" onclick="copySound('eat3.mp3', 'eat.mp3')">Use This Sound</button>
+            <span class="success" id="success-eat3">✓ Selected!</span>
+        </div>
+    </div>
+
+    <script>
+        let currentAudio = null;
+
+        function playSound(filename) {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            
+            currentAudio = new Audio(filename);
+            currentAudio.play();
+        }
+
+        function copySound(source, destination) {
+            // In a browser environment, we can't directly copy files
+            // This is just for demonstration purposes
+            console.log(`Selected ${source} as ${destination}`);
+            
+            // Show success message
+            const successId = `success-${source.split('.')[0]}`;
+            document.getElementById(successId).style.display = 'inline';
+            
+            // Store selection in localStorage
+            localStorage.setItem(destination, source);
+            
+            // Alert user about manual steps
+            alert(`You've selected ${source} as your ${destination}.\n\nTo use this sound, you need to manually copy it to your sounds directory:\n\n1. Find this file at: frontend/public/sounds_samples/${source}\n2. Copy it to: frontend/public/sounds/${destination}`);
+        }
+
+        // Check for any previously selected sounds
+        window.onload = function() {
+            const gameoverSelection = localStorage.getItem('gameover.mp3');
+            const eatSelection = localStorage.getItem('eat.mp3');
+            
+            if (gameoverSelection) {
+                const successId = `success-${gameoverSelection.split('.')[0]}`;
+                document.getElementById(successId).style.display = 'inline';
+            }
+            
+            if (eatSelection) {
+                const successId = `success-${eatSelection.split('.')[0]}`;
+                document.getElementById(successId).style.display = 'inline';
+            }
+        };
+    </script>
+</body>
+</html> 
